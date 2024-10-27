@@ -1,13 +1,6 @@
 'use strict';
 
-const generateEmployeeId = () => {
-  const alphanumeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let id = 'UI';
-  for (let i = 0; i < 7; i++) {
-    id += alphanumeric.charAt(Math.floor(Math.random() * alphanumeric.length));
-  }
-  return id;
-};
+import generateEmployeeId from '../utils/generateEmployeeId.js';
 
 export default (sequelize, DataTypes) => {
   const Employee = sequelize.define(
@@ -37,7 +30,16 @@ export default (sequelize, DataTypes) => {
       gender: {
         type: DataTypes.STRING,
         allowNull: false,
-      }
+      },
+      startDate: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      days_worked: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
     },
     {
       indexes: [
@@ -46,6 +48,16 @@ export default (sequelize, DataTypes) => {
           fields: ['email_address', 'cafeId'],
         },
       ],
+      hooks: {
+        beforeSave: (employee) => {
+          if (employee.startDate) {
+            const today = new Date();
+            const startDate = new Date(employee.startDate);
+            const timeDiff = today - startDate; // Difference in milliseconds
+            employee.days_worked = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+          }
+        },
+      },
     }
   );
 

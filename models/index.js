@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Sequelize } from 'sequelize';
 import process from 'process';
-import configFile from '../config/config.json' assert { type: 'json' };
+import configFile from '../config/config.js';
 import Cafe from './cafe.js';
 import Employee from './employee.js';
 

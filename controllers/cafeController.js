@@ -13,29 +13,43 @@ export const getAllCafes = async (req, res) => {
     const { location } = req.query;
     let cafes;
 
+    // If a location is provided, filter cafes by location
     if (location) {
       cafes = await db.Cafes.findAll({
-        where: { location: { [Op.like]: `%${location}%` } },
+        where: { 
+          location: { [Op.like]: `%${location}%` } 
+        },
         include: [{ model: db.Employee, as: 'Employee' }],
-        order: [[{ model: db.Employee, as: 'Employee' }, 'id', 'DESC']]
       });
     } else {
+      // If no location, retrieve all cafes
       cafes = await db.Cafes.findAll({
         include: [{ model: db.Employee, as: 'Employee' }],
-        order: [[{ model: db.Employee, as: 'Employee' }, 'id', 'DESC']]
       });
     }
 
-    cafes = cafes.map(cafe => ({
+    // Map and sort cafes by employee count
+    const formattedCafes = cafes.map(cafe => ({
       ...cafe.toJSON(),
       employeeCount: cafe.Employee.length,
-    })).sort((a, b) => b.employeeCount - a.employeeCount);
+    }));
 
-    res.json(cafes);
+    // Sort cafes by employee count in descending order
+    const sortedCafes = formattedCafes.sort((a, b) => b.employeeCount - a.employeeCount);
+
+    // If location was provided and no cafes were found, return an empty list
+    if (location && sortedCafes.length === 0) {
+      return res.json([]); // Return an empty array
+    }
+
+    // Return the sorted cafes
+    res.json(sortedCafes);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to retrieve cafes' });
   }
 };
+
 
 export const getEmployeesByCafeId = async (req, res) => {
   const { cafeId } = req.params;
@@ -51,7 +65,7 @@ export const getEmployeesByCafeId = async (req, res) => {
     // Find all employees associated with the cafeId
     const employees = await db.Employee.findAll({
       where: { cafeId },
-      order: [['createdAt', 'DESC']]
+      order: [['days_worked', 'DESC']]
     });
 
     // Check if employees exist for the cafeId
@@ -124,16 +138,21 @@ export const deleteCafe = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Find the cafe by id
     const cafe = await db.Cafes.findByPk(id);
     if (!cafe) {
       return res.status(404).json({ error: 'Cafe not found.' });
     }
 
+    // Delete all employees associated with the cafe
+    await db.Employee.destroy({ where: { cafeId: id } });
+
+    // Now delete the cafe 
     await cafe.destroy();
 
-    return res.status(200).json({ message: 'Cafe deleted successfully.' });
+    return res.status(200).json({ message: 'Cafe and associated employees deleted successfully.' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to delete cafe.' });
+    res.status(500).json({ error: 'Failed to delete cafe and associated employees.' });
   }
 };

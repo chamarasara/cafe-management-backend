@@ -9,27 +9,38 @@ export const validateEmployee = [
     body('cafeId').notEmpty().withMessage('Cafe ID is required.')
 ];
 
+
 export const createEmployee = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ errors: errors.array() });
     }
   
     try {
-      const { name, email_address, phone_number, gender, cafeId } = req.body;
-  
-      // Check if an employee with the same email exists for the same cafe
-      const existingEmployee = await db.Employee.findOne({ where: { email_address, cafeId } });
-      if (existingEmployee) {
-        return res.status(400).json({ message: 'An employee with this email already exists in this cafe.' });
-      }
-  
-      const employee = await db.Employee.create({ name, email_address, phone_number, gender, cafeId });
-      return res.status(201).json({ message: 'Employee created successfully', employee });
+        const { name, email_address, phone_number, gender, cafeId } = req.body;
+
+        // Check if an employee with the same email exists for any cafe
+        const existingEmployee = await db.Employee.findOne({ where: { email_address } });
+        if (existingEmployee) {
+            return res.status(400).json({ message: 'An employee with this email already exists in another cafe.' });
+        }
+
+        // Create the employee 
+        const employee = await db.Employee.create({ 
+            name, 
+            email_address, 
+            phone_number, 
+            gender, 
+            cafeId, 
+            startDate: new Date() 
+        });
+
+        return res.status(201).json({ message: 'Employee created successfully', employee });
     } catch (error) {
-      return res.status(500).json({ message: 'Error creating employee', error: error.message });
+        return res.status(500).json({ message: 'Error creating employee', error: error.message });
     }
-  };
+};
+
 
 
 export const updateEmployee = async (req, res) => {
