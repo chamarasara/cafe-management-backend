@@ -1,0 +1,27 @@
+{
+  "name": "cafe-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Chamara",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon index.js",
+    "stg": "NODE_ENV=staging nodemon index.js",
+    "prod": "NODE_ENV=production node index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-validator": "^7.2.0",
+    "mysql2": "^3.11.3",
+    "sequelize": "^6.37.4",
+    "sequelize-cli": "^6.6.2",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
