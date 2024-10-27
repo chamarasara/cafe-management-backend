@@ -4,24 +4,24 @@ dotenv.config();
 
 export default {
   development: {
-    username: "root",
-    password: "casperbuster",
+    username: process.env.DEV_DATABASE_USERNAME,
+    password: process.env.DEV_DATABASE_PASSWORD,
     database: process.env.DEV_DATABASE,
-    host: "127.0.0.1",
-    dialect: "mysql",
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
   },
   test: {
-    username: "root",
-    password: null,
-    database: "cafe_management_test",
-    host: "127.0.0.1",
-    dialect: "mysql",
+    username: process.env.TEST_DATABASE_USERNAME,
+    password: process.env.DEV_DATABASE_PASSWORD,
+    database: process.env.DEV_DATABASE,
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
   },
   production: {
-    username: "root",
-    password: null,
-    database: "cafe_management_production",
-    host: "127.0.0.1",
-    dialect: "mysql",
+    username: process.env.TEST_DATABASE_USERNAME,
+    password: process.env.DEV_DATABASE_PASSWORD,
+    database: process.env.DEV_DATABASE,
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
   },
 };
