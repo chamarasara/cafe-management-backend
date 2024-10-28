@@ -52,7 +52,7 @@ export const updateEmployee = async (req, res) => {
 
     const { id } = req.params;
     const { name, email_address, phone_number, gender, cafeId } = req.body;
-    console.log(id)
+
     try {
         // Find the employee by id
         const employee = await db.Employee.findByPk(id);
@@ -82,6 +82,7 @@ export const updateEmployee = async (req, res) => {
         return res.status(500).json({ error: 'An error occurred while updating the employee.' });
     }
 };
+
 
 export const deleteEmployee = async (req, res) => {
     const { id } = req.params;

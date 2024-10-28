@@ -53,8 +53,8 @@ export default (sequelize, DataTypes) => {
           if (employee.startDate) {
             const today = new Date();
             const startDate = new Date(employee.startDate);
-            const timeDiff = today - startDate; // Difference in milliseconds
-            employee.days_worked = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+            const timeDiff = today - startDate; 
+            employee.days_worked = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); 
           }
         },
       },
@@ -63,7 +63,7 @@ export default (sequelize, DataTypes) => {
 
   Employee.associate = (models) => {
     Employee.belongsTo(models.Cafes, {
-      foreignKey: 'cafeId', // Define the custom column name
+      foreignKey: 'cafeId', 
       as: 'cafes',
     });
   };

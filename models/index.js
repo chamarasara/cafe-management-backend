@@ -10,7 +10,7 @@ const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = configFile[env];
-const db = {}; // Initialize db first
+const db = {}; 
 
 let sequelize;
 if (config.use_env_variable) {
