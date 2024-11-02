@@ -5,6 +5,7 @@ import {
   createEmployee, 
   updateEmployee, 
   deleteEmployee, 
+  getAllEmployees,
   validateEmployee 
 } from '../controllers/employeeController.js';
 
@@ -50,6 +51,17 @@ EmployeeRoutes.delete('/employee/:id', async (req, res) => {
     } catch (error) {
         logger.error('Error deleting employee', { error: error.message });
         res.status(500).json({ message: 'Error deleting employee', error: error.message });
+    }
+});
+
+// Route for fetching all employees
+EmployeeRoutes.get('/employees', async (req, res) => {
+    try {
+        await getAllEmployees(req, res);
+        logger.info('Fetched all employees successfully');
+    } catch (error) {
+        logger.error('Error fetching all employees', { error: error.message });
+        res.status(500).json({ message: 'Error fetching all employees', error: error.message });
     }
 });
 

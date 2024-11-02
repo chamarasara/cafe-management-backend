@@ -9,6 +9,16 @@ export const validateEmployee = [
     body('cafeId').notEmpty().withMessage('Cafe ID is required.')
 ];
 
+export const getAllEmployees = async (req, res) => {
+    try {
+        const employees = await db.Employee.findAll();
+
+        return res.status(200).json({ employees });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'An error occurred while retrieving employees.' });
+    }
+};
 
 export const createEmployee = async (req, res) => {
     const errors = validationResult(req);
