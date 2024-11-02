@@ -98,7 +98,20 @@ export const createCafe = async (req, res) => {
       location,
     });
 
-    res.status(201).json(newCafe);
+    const formattedResponse = {
+      id: newCafe.id,
+      name: newCafe.name,
+      description: newCafe.description,
+      logo: newCafe.logo || null,
+      location: newCafe.location,
+      createdAt: newCafe.createdAt,
+      updatedAt: newCafe.updatedAt,
+      Employee: [], 
+      employeeCount: 0
+    };
+
+  
+    res.status(201).json(formattedResponse);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to create cafe' });
@@ -147,7 +160,7 @@ export const deleteCafe = async (req, res) => {
     // Delete all employees associated with the cafe
     await db.Employee.destroy({ where: { cafeId: id } });
 
-    // Now delete the cafe 
+    // Now delete the cafe itself
     await cafe.destroy();
 
     return res.status(200).json({ message: 'Cafe and associated employees deleted successfully.' });

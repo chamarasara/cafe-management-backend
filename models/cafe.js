@@ -10,7 +10,7 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true,
         type: DataTypes.UUID,
-        defaultValue: uuidv4(),
+        defaultValue: () => uuidv4(),
       },
       name: {
         type: DataTypes.STRING,
@@ -27,11 +27,14 @@ export default (sequelize, DataTypes) => {
       location: {
         type: DataTypes.STRING,
         allowNull: false,
-      }
+      },
     }
   );
+
+  // Define association
   Cafes.associate = (models) => {
     Cafes.hasMany(models.Employee, { as: "Employee" });
   };
+
   return Cafes;
 };

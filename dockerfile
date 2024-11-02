@@ -2,19 +2,19 @@
 FROM node:18
 
 # Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock) to the working directory
-COPY package*.json ./
+# Copy package.json and yarn.lock to the working directory
+COPY package.json yarn.lock ./
 
-# Install app dependencies
-RUN npm install --production
+# Install app dependencies using yarn
+RUN yarn install
 
 # Copy the rest of the application code to the working directory
 COPY . .
 
 # Expose the port your app runs on
-EXPOSE 3000
+EXPOSE 3001
 
-# Command to run the app
-CMD ["node", "index.js"] # Adjust if your entry point is different
+# Start the backend
+CMD ["yarn", "dev"]
