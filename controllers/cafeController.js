@@ -68,18 +68,15 @@ export const getEmployeesByCafeId = async (req, res) => {
       order: [['days_worked', 'DESC']]
     });
 
-    // Check if employees exist for the cafeId
-    if (employees.length === 0) {
-      return res.status(404).json({ message: 'No employees found for this cafe.' });
-    }
-
-    // Return the list of employees
+    // Return an empty array if no employees exist for the cafeId
     return res.status(200).json(employees);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'An error occurred while retrieving employees.' });
   }
 };
+
+
 
 export const createCafe = async (req, res) => {
   try {
