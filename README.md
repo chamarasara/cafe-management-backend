@@ -18,7 +18,7 @@ To build and run the Docker image, ensure you have [Docker](https://www.docker.c
 1. Clone the repository:
 ```bash
    git clone https://github.com/chamarasara/cafe-management-backend.git
-   cd cafe-management
+   cd cafe-management-backend
    ```
 2. Install the required packages:
 ```bash
