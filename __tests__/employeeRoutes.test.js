@@ -13,7 +13,7 @@ describe('Employee Routes', () => {
                 email_address: 'john@example.com',
                 phone_number: '91234567',
                 gender: 'Male',
-                cafeId: 'someCafeId', // Use a valid cafeId
+                cafeId: 'someCafeId', 
                 startDate: new Date(), 
             };
 

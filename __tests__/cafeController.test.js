@@ -11,7 +11,7 @@ describe('Cafe Controller', () => {
 
   describe('GET /cafes', () => {
     it('should retrieve all cafes when no location is provided', async () => {
-      // Arrange: Create some cafes
+      //Create some cafes
       const cafes = [
         { id: uuidv4(), name: 'Cafe One', description: 'First Cafe', logo: 'logo1.png', location: 'New York' },
         { id: uuidv4(), name: 'Cafe Two', description: 'Second Cafe', logo: 'logo2.png', location: 'Los Angeles' },
@@ -19,13 +19,13 @@ describe('Cafe Controller', () => {
 
       await db.Cafes.bulkCreate(cafes);
 
-      // Act: Make the GET request
+      // Make the GET request
       const res = await request(app).get('/api/cafes');
 
-      // Assert: Check the response
+      //  Check the response
       expect(res.status).to.equal(200);
       expect(res.body).to.be.an('array');
-      expect(res.body.length).to.equal(2); // Expecting 2 cafes
+      expect(res.body.length).to.equal(2);
 
       // Sort the response body by name for comparison
       const sortedResponse = res.body.sort((a, b) => a.name.localeCompare(b.name));
@@ -36,7 +36,7 @@ describe('Cafe Controller', () => {
 
 
     it('should retrieve cafes filtered by location', async () => {
-      // Arrange: Create some cafes
+      //  Create some cafes
       const cafes = [
         { id: uuidv4(), name: 'Cafe Three', description: 'Third Cafe', logo: 'logo3.png', location: 'New York' },
         { id: uuidv4(), name: 'Cafe Four', description: 'Fourth Cafe', logo: 'logo4.png', location: 'Los Angeles' },
@@ -44,10 +44,10 @@ describe('Cafe Controller', () => {
 
       await db.Cafes.bulkCreate(cafes);
 
-      // Act: Make the GET request with a location query
+      // Make the GET request with a location query
       const res = await request(app).get('/api/cafes?location=New York');
 
-      // Assert: Check the response
+      //  Check the response
       expect(res.status).to.equal(200);
       expect(res.body).to.be.an('array');
       expect(res.body.length).to.equal(1); // Expecting 1 cafe for New York
@@ -55,10 +55,10 @@ describe('Cafe Controller', () => {
     });
 
     it('should return an empty array if no cafes match the location', async () => {
-      // Act: Make the GET request with a non-matching location
+      // Make the GET request with a non-matching location
       const res = await request(app).get('/api/cafes?location=NonExistingLocation');
 
-      // Assert: Check the response
+      //  Check the response
       expect(res.status).to.equal(200);
       expect(res.body).to.be.an('array').that.is.empty; // Expecting an empty array
     });
@@ -185,7 +185,7 @@ describe('PUT /api/cafe/:id', () => {
   });
 
   it('should return 404 if cafe does not exist', async () => {
-    const nonExistentId = uuidv4(); 
+    const nonExistentId = uuidv4();
 
     const updatedCafeData = {
       name: 'Non-existent Cafe',
@@ -205,7 +205,7 @@ describe('PUT /api/cafe/:id', () => {
   it('should return 400 if validation fails', async () => {
     const invalidCafeData = {
       // Missing required fields for validation
-      name: '', 
+      name: '',
       description: 'This cafe has no name',
       logo: 'invalid_logo.png',
       location: 'Somewhere',
@@ -217,7 +217,7 @@ describe('PUT /api/cafe/:id', () => {
 
     expect(res.status).to.equal(400);
     expect(res.body).to.have.property('errors');
-    expect(res.body.errors).to.be.an('array').that.is.not.empty; 
+    expect(res.body.errors).to.be.an('array').that.is.not.empty;
   });
 });
 
@@ -277,7 +277,7 @@ describe('DELETE /api/cafe/:id', () => {
   });
 
   it('should return 404 if cafe does not exist', async () => {
-    const nonExistentId = uuidv4(); 
+    const nonExistentId = uuidv4();
 
     const res = await request(app).delete(`/api/cafe/${nonExistentId}`);
 
