@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const { faker } = require('@faker-js/faker');
 
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     const generateEmployeeId = (await import('../utils/generateEmployeeId.js')).default; 
 
     const employees = [];
@@ -26,7 +26,7 @@ module.exports = {
     await queryInterface.bulkInsert('Employees', employees);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.bulkDelete('Employees', null, {});
   },
 };

@@ -8,6 +8,7 @@ import Employee from './employee.js';
 
 const __filename = new URL(import.meta.url).pathname;
 const __dirname = path.dirname(__filename);
+
 const env = process.env.NODE_ENV || 'development';
 const config = configFile[env];
 const db = {}; 
@@ -46,6 +47,30 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+
+async function connectWithRetry() {
+  let attempts = 0;
+  const maxAttempts = 5;
+
+  while (attempts < maxAttempts) {
+    try {
+      await sequelize.authenticate();
+      console.log('Connection to MySQL has been established successfully.');
+      return;
+    } catch (error) {
+      attempts++;
+      console.error('Unable to connect to the database:', error.message);
+      console.log(`Retrying in ${attempts} seconds...`);
+      await new Promise(resolve => setTimeout(resolve, attempts * 1000));
+    }
+  }
+
+  console.error('Max attempts reached. Exiting.');
+  process.exit(1);
+}
+
+// Call the connectWithRetry function
+connectWithRetry();
 
 export { sequelize };
 export default db;
