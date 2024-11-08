@@ -6,8 +6,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon index.js",
-    "stg": "NODE_ENV=staging nodemon index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "stg": "cross-env NODE_ENV=staging nodemon index.js",
     "test": "mocha __tests__ --timeout 5000"
   },
   "dependencies": {
@@ -28,6 +28,7 @@
     "@babel/preset-env": "^7.26.0",
     "@babel/register": "^7.25.9",
     "chai": "^5.1.2",
+    "cross-env": "^7.0.3",
     "identity-obj-proxy": "^3.0.0",
     "mocha": "^10.7.3",
     "nodemon": "^3.1.7",
