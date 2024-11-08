@@ -13,8 +13,6 @@ This is the backend for the Cafe Management application. It is built using Node.
 
 ## Installation
 
-To build and run the Docker image, ensure you have [Docker](https://www.docker.com/get-started) installed on your machine.
-
 1. Clone the repository:
 ```bash
    git clone https://github.com/chamarasara/cafe-management-backend.git
@@ -27,7 +25,8 @@ To build and run the Docker image, ensure you have [Docker](https://www.docker.c
 
 ## Running the Application
 
-To run the application using Docker, execute the following command:
+Please take a copy from .env.sample. Create MySQL database and .env file and add database credentials to .env file. 
+To run the application, execute the following command:
 
 ```bash
 yarn dev
@@ -37,9 +36,7 @@ This will start the server, and you can access it at `http://localhost:4000`.
 
 ## Database Migrations
 
-Create MySQL database and add database credentials to .env file from .env.sample
-
-To run the database migrations, execute the following command inside your Docker container:
+To run the database migrations, execute the following command:
 
 ```bash
 npx sequelize-cli db:migrate
