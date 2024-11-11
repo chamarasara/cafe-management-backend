@@ -19,6 +19,8 @@ if (config.use_env_variable) {
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, {
     dialect: 'mysql',
+    port:3306,
+    host:'host.docker.internal'
   });
 }
 
