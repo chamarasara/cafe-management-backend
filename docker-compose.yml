@@ -1,0 +1,32 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: development
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: DEV_DATABASE_PASSWORD
+      DB_NAME: DEV_DATABASE
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - mysql
+    command: yarn dev
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: DEV_DATABASE_PASSWORD
+      MYSQL_DATABASE: DEV_DATABASE
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
