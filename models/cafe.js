@@ -31,9 +31,12 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  // Define association
   Cafes.associate = (models) => {
-    Cafes.hasMany(models.Employee, { as: "Employee" });
+    Cafes.hasMany(models.Employee, {
+      foreignKey: 'cafe_Id',
+      as: 'Employees',
+    });
+    
   };
 
   return Cafes;

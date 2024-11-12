@@ -40,12 +40,22 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 0,
       },
+      cafe_Id: {  
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+          model: 'Cafes',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
     },
     {
       indexes: [
         {
           unique: true,
-          fields: ['email_address', 'cafeId'],
+          fields: ['email_address', 'cafe_Id'], 
         },
       ],
       hooks: {
@@ -63,8 +73,8 @@ export default (sequelize, DataTypes) => {
 
   Employee.associate = (models) => {
     Employee.belongsTo(models.Cafes, {
-      foreignKey: 'cafeId', 
-      as: 'cafes',
+      foreignKey: 'cafe_Id',
+      as: 'Cafes',
     });
   };
 

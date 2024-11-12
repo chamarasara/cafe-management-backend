@@ -12,26 +12,26 @@ export const getAllCafes = async (req, res) => {
   try {
     const { location } = req.query;
     let cafes;
-
     // If a location is provided, filter cafes by location
     if (location) {
       cafes = await db.Cafes.findAll({
-        where: { 
-          location: { [Op.like]: `%${location}%` } 
+        where: {
+          location: { [Op.like]: `%${location}%` }
         },
-        include: [{ model: db.Employee, as: 'Employee' }],
+        include: [{ model: db.Employee, as: 'Employees' }],
+        nest: true,
       });
     } else {
       // If no location, retrieve all cafes
       cafes = await db.Cafes.findAll({
-        include: [{ model: db.Employee, as: 'Employee' }],
+        include: [{ model: db.Employee, as: 'Employees' }],
       });
     }
 
     // Map and sort cafes by employee count
     const formattedCafes = cafes.map(cafe => ({
       ...cafe.toJSON(),
-      employeeCount: cafe.Employee.length,
+      employeeCount: cafe.Employees.length,
     }));
 
     // Sort cafes by employee count in descending order
@@ -39,32 +39,31 @@ export const getAllCafes = async (req, res) => {
 
     // If location was provided and no cafes were found, return an empty list
     if (location && sortedCafes.length === 0) {
-      return res.json([]); // Return an empty array
+      return res.json([]); 
     }
 
     // Return the sorted cafes
     res.json(sortedCafes);
   } catch (error) {
-    console.error(error);
+    console.error(error.message);
     res.status(500).json({ error: 'Failed to retrieve cafes' });
   }
 };
 
 
 export const getEmployeesByCafeId = async (req, res) => {
-  const { cafeId } = req.params;
-
+  const { cafe_Id } = req.params;
   try {
     // Check if the cafe exists
-    const cafeExists = await db.Cafes.findOne({ where: { id: cafeId } });
+    const cafeExists = await db.Cafes.findOne({ where: { id: cafe_Id } });
 
     if (!cafeExists) {
       return res.status(404).json({ error: 'Cafe not found.' });
     }
 
-    // Find all employees associated with the cafeId
+    // Find all employees associated with the cafe_Id
     const employees = await db.Employee.findAll({
-      where: { cafeId },
+      where: { cafe_Id },
       order: [['days_worked', 'DESC']]
     });
 
@@ -103,11 +102,11 @@ export const createCafe = async (req, res) => {
       location: newCafe.location,
       createdAt: newCafe.createdAt,
       updatedAt: newCafe.updatedAt,
-      Employee: [], 
+      Employee: [],
       employeeCount: 0
     };
 
-  
+
     res.status(201).json(formattedResponse);
   } catch (error) {
     console.error(error);
@@ -155,9 +154,9 @@ export const deleteCafe = async (req, res) => {
     }
 
     // Delete all employees associated with the cafe
-    await db.Employee.destroy({ where: { cafeId: id } });
+    await db.Employee.destroy({ where: { cafe_Id: id } });
 
-    // Now delete the cafe itself
+    // Delete the cafe 
     await cafe.destroy();
 
     return res.status(200).json({ message: 'Cafe and associated employees deleted successfully.' });

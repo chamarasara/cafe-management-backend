@@ -6,7 +6,7 @@ export const validateEmployee = [
     body('email_address').isEmail().withMessage('Valid email address is required.'),
     body('phone_number').matches(/^[89]\d{7}$/).withMessage('Phone number must start with 8 or 9 and be 8 digits long.'),
     body('gender').notEmpty().withMessage('Gender is required.'),
-    body('cafeId').notEmpty().withMessage('Cafe ID is required.')
+    body('cafe_Id').notEmpty().withMessage('Cafe ID is required.')
 ];
 
 export const getAllEmployees = async (req, res) => {
@@ -27,7 +27,7 @@ export const createEmployee = async (req, res) => {
     }
   
     try {
-        const { name, email_address, phone_number, gender, cafeId } = req.body;
+        const { name, email_address, phone_number, gender, cafe_Id } = req.body;
 
         // Check if an employee with the same email exists for any cafe
         const existingEmployee = await db.Employee.findOne({ where: { email_address } });
@@ -41,7 +41,7 @@ export const createEmployee = async (req, res) => {
             email_address, 
             phone_number, 
             gender, 
-            cafeId, 
+            cafe_Id, 
             startDate: new Date() 
         });
 
@@ -61,7 +61,7 @@ export const updateEmployee = async (req, res) => {
     }
 
     const { id } = req.params;
-    const { name, email_address, phone_number, gender, cafeId } = req.body;
+    const { name, email_address, phone_number, gender, cafe_Id } = req.body;
 
     try {
         // Find the employee by id
@@ -78,7 +78,7 @@ export const updateEmployee = async (req, res) => {
                 email_address,
                 phone_number,
                 gender,
-                cafeId
+                cafe_Id
             },
             { where: { id: id } }
         );

@@ -9,7 +9,7 @@ const config = {
     database: process.env.DEV_DATABASE,
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    port: process.env.DB_PORT || 3306,
+    port: process.env.DB_PORT || 3307,
   },
   test: {
     username: process.env.TEST_DATABASE_USERNAME,
@@ -17,7 +17,7 @@ const config = {
     database: process.env.TEST_DATABASE,
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    port: process.env.DB_PORT || 3306,
+    port: process.env.DB_PORT || 3307,
   },
   production: {
     username: process.env.PROD_DATABASE_USERNAME,
@@ -25,7 +25,7 @@ const config = {
     database: process.env.PROD_DATABASE, 
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    port: process.env.DB_PORT || 3306,
+    port: process.env.DB_PORT || 3307,
   },
 };
 

@@ -58,7 +58,7 @@ CafeRoutes.put('/cafe/:id', validateCafe, async (req, res) => {
   }
 });
 
-CafeRoutes.get('/cafes/:cafeId/employees', async (req, res) => {
+CafeRoutes.get('/cafes/:cafe_Id/employees', async (req, res) => {
   try {
     await getEmployeesByCafeId(req, res);
     logger.info(`Employees for cafe with ID ${req.params.cafeId} retrieved successfully`);

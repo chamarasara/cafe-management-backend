@@ -14,65 +14,108 @@ const config = configFile[env];
 const db = {}; 
 
 let sequelize;
+
+// Initial Sequelize connection 
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, {
+  sequelize = new Sequelize({
     dialect: 'mysql',
-    port:3306,
-    host:'host.docker.internal'
+    port: 3306,
+    host: 'host.docker.internal',
+    username: config.username,
+    password: config.password,
+    database: 'mysql', 
   });
 }
 
-const modelFiles = fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== path.basename(__filename) &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
-    );
-  });
+// Create database if it doesn't exist
+const createDatabaseIfNotExists = async () => {
+  try {
+    // Check if the cafe_management database exists
+    const [results] = await sequelize.query("SHOW DATABASES LIKE 'cafe_management'");
 
-for (const file of modelFiles) {
-  const model = (await import(path.join(__dirname, file))).default(sequelize, Sequelize.DataTypes);
-  db[model.name] = model;
-}
-
-// Add Cafe to the db object after it's defined
-db.Cafe = Cafe(sequelize, Sequelize.DataTypes);
-db.Employee = Employee(sequelize, Sequelize.DataTypes);
-
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
-
-async function connectWithRetry() {
-  let attempts = 0;
-  const maxAttempts = 5;
-
-  while (attempts < maxAttempts) {
-    try {
-      await sequelize.authenticate();
-      console.log('Connection to MySQL has been established successfully.');
-      return;
-    } catch (error) {
-      attempts++;
-      console.error('Unable to connect to the database:', error.message);
-      console.log(`Retrying in ${attempts} seconds...`);
-      await new Promise(resolve => setTimeout(resolve, attempts * 1000));
+    if (results.length === 0) {
+      // Create the database if it doesn't exist
+      await sequelize.query("CREATE DATABASE `cafe_management`;");
+      console.log('Database "cafe_management" created successfully.');
+    } else {
+      console.log('Database "cafe_management" already exists.');
     }
+  } catch (error) {
+    console.error('Error while checking/creating the database:', error.message);
+    process.exit(1); 
+  }
+};
+
+// Dynamically load models
+const loadModels = async () => {
+  const modelFiles = fs
+    .readdirSync(__dirname)
+    .filter(file => {
+      return (
+        file.indexOf('.') !== 0 &&
+        file !== path.basename(__filename) &&
+        file.slice(-3) === '.js' &&
+        file.indexOf('.test.js') === -1
+      );
+    });
+
+  for (const file of modelFiles) {
+    const model = (await import(path.join(__dirname, file))).default(sequelize, Sequelize.DataTypes);
+    db[model.name] = model;
   }
 
-  console.error('Max attempts reached. Exiting.');
-  process.exit(1);
-}
+  // Add Cafe and Employee models to the db object after they're defined
+  db.Cafes = Cafe(sequelize, Sequelize.DataTypes);
+  db.Employee = Employee(sequelize, Sequelize.DataTypes);
 
-// Call the connectWithRetry function
-connectWithRetry();
+  Object.keys(db).forEach(modelName => {
+    if (db[modelName].associate) {
+      db[modelName].associate(db);
+    }
+  });
+};
+
+// Re-initialize Sequelize with the correct database after ensuring it exists
+const reconnectWithDatabase = async () => {
+  try {
+    sequelize = new Sequelize({
+      dialect: 'mysql',
+      port: 3306,
+      host: 'host.docker.internal',
+      username: config.username,
+      password: config.password,
+      database: 'cafe_management',  
+    });
+
+    await sequelize.authenticate();
+    console.log('Connection to MySQL with "cafe_management" database has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the "cafe_management" database:', error.message);
+    process.exit(1);
+  }
+};
+
+// Sync models with the database
+const syncModels = async () => {
+  try {
+    await sequelize.sync();
+    console.log('Models synced successfully.');
+  } catch (error) {
+    console.error('Error syncing models:', error.message);
+    process.exit(1);
+  }
+};
+
+const initialize = async () => {
+  await createDatabaseIfNotExists(); 
+  await reconnectWithDatabase();      
+  await loadModels();                
+  await syncModels();                 
+};
+
+initialize();
 
 export { sequelize };
 export default db;
