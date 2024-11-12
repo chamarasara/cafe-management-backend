@@ -63,17 +63,18 @@ export const getEmployeesByCafeId = async (req, res) => {
 
     // Find all employees associated with the cafe_Id
     const employees = await db.Employee.findAll({
-      where: { cafe_Id },
-      order: [['days_worked', 'DESC']]
+      where: { cafe_Id }, 
+      order: [['days_worked', 'DESC']],
     });
 
-    // Return an empty array if no employees exist for the cafeId
+    // Return an empty array if no employees exist for the cafe
     return res.status(200).json(employees);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'An error occurred while retrieving employees.' });
   }
 };
+
 
 
 

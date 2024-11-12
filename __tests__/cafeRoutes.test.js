@@ -1,12 +1,24 @@
 import request from 'supertest';
 import { expect } from 'chai';
 import app from '../index.js'; 
-import db from '../models/index.js'; 
 import { v4 as uuidv4 } from 'uuid';
+import { Sequelize } from 'sequelize';
+import Cafe from '../models/cafe.js';
+import Employee from '../models/employee.js';
+
+const sequelize = new Sequelize('mysql', 'root', 'casperbuster', {
+  host: 'host.docker.internal',
+  dialect: 'mysql', 
+});
+
+const db = {}; 
+db.Cafes = Cafe(sequelize, Sequelize.DataTypes);
+db.Employee = Employee(sequelize, Sequelize.DataTypes);
 
 describe('Cafe Routes', () => {
 
   beforeEach(async () => {
+    await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
     await db.Cafes.destroy({ where: {}, truncate: true });
     await db.Employee.destroy({ where: {}, truncate: true });
   });

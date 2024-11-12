@@ -1,7 +1,18 @@
 import request from 'supertest';
 import { expect } from 'chai';
 import app from '../index.js'; 
-import db from '../models/index.js'; 
+import { Sequelize } from 'sequelize';
+import Cafe from '../models/cafe.js';
+import Employee from '../models/employee.js';
+
+const sequelize = new Sequelize('mysql', 'root', 'casperbuster', {
+  host: 'host.docker.internal',
+  dialect: 'mysql', 
+});
+
+const db = {}; 
+db.Cafes = Cafe(sequelize, Sequelize.DataTypes);
+db.Employee = Employee(sequelize, Sequelize.DataTypes);
 
 describe('Employee Routes', () => {
     let employeeId;
