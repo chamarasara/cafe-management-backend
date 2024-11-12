@@ -8,7 +8,9 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "stg": "cross-env NODE_ENV=staging nodemon index.js",
-    "test": "mocha __tests__ --timeout 5000"
+    "test": "mocha __tests__ --timeout 5000",
+    "migrate": "npx sequelize-cli db:migrate",
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "dependencies": {
     "@faker-js/faker": "^9.1.0",
